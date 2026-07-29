@@ -158,8 +158,9 @@ Run:
 ```powershell
 $sourceRoot = 'D:\Code\EventCamera'
 $migrationTemp = Join-Path ([System.IO.Path]::GetTempPath()) 'EventPoseFinal-migration-20260729'
+$gitDirectoryPrefix = (Join-Path $sourceRoot '.git') + [System.IO.Path]::DirectorySeparatorChar
 Get-ChildItem -LiteralPath $sourceRoot -Recurse -File -Force |
-    Where-Object { -not $_.FullName.StartsWith((Join-Path $sourceRoot '.git'), [System.StringComparison]::OrdinalIgnoreCase) } |
+    Where-Object { -not $_.FullName.StartsWith($gitDirectoryPrefix, [System.StringComparison]::OrdinalIgnoreCase) } |
     ForEach-Object {
         [pscustomobject]@{
             RelativePath = [System.IO.Path]::GetRelativePath($sourceRoot, $_.FullName)
@@ -1150,9 +1151,10 @@ $status
 $forbidden = $status | Where-Object { $_ -match '(^|[ /])(DHP19|mmpose|openeb|rpg_vid2e|v2e_exps_public)([ /]|$)' -or $_ -match '\.(npy|aedat4?|h5|hdf5|pth|pt|ckpt|onnx)$' }
 if ($forbidden) { $forbidden; throw 'Forbidden dataset, third-party, environment, or model content appears in Git status.' }
 
+$gitDirectoryPrefix = (Join-Path $targetRoot '.git') + [System.IO.Path]::DirectorySeparatorChar
 $unexpectedLarge = Get-ChildItem -LiteralPath $targetRoot -Recurse -File -Force -Attributes !ReparsePoint |
     Where-Object {
-        -not $_.FullName.StartsWith((Join-Path $targetRoot '.git'), [System.StringComparison]::OrdinalIgnoreCase) -and
+        -not $_.FullName.StartsWith($gitDirectoryPrefix, [System.StringComparison]::OrdinalIgnoreCase) -and
         $_.Length -gt 50MB -and
         $_.FullName -ne (Join-Path $targetRoot 'tests\fixtures\test_dummy.invalid.raw')
     }
