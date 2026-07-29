@@ -20,7 +20,7 @@ The first organization pass is non-destructive: copy and verify small project-ow
 
 ### Project-owned code
 
-The following files are copied byte-for-byte into a provenance-preserving legacy area before any refactoring:
+The following files are extracted from their old folders and copied byte-for-byte directly into a small set of functional project folders:
 
 - `D:\Code\event_camera\dhp19_dataset.py`
 - `D:\OpenEB_Dev\openeb\event_to_voxel.py`
@@ -35,11 +35,13 @@ The two similarly named folders remain distinct:
 - `D:\Code\EventCamera`: the Git repository.
 - `D:\Code\event_camera`: loose project code and a downloaded Linux installer.
 
+The code files go directly to `scripts\data`, `scripts\diagnostics`, or `tests\fixtures`; the old source-folder hierarchy is not reproduced. If two extracted files have the same name, a short source prefix is added instead of creating another folder. A flat inventory records every original path, target path, hash, and classification.
+
 The Miniconda installer in `D:\Code\event_camera` is recorded in the inventory but is not copied into Git.
 
 ### Research and project documents
 
-The supplied DOCX notes are copied into `docs\archive\ai_notes`. The project PDF, flowchart, project images, and research TXT are copied into `docs\research` where available. Original filenames are retained, and an index explains the origin and reliability of each item.
+The supplied DOCX notes are copied into the single flat folder `docs\notes`. The project PDF, flowchart, project images, and research TXT are copied into the single flat folder `docs\research` where available. Original filenames are retained when unique; a short descriptive prefix resolves any collision. An index explains the origin and reliability of each item.
 
 The AI-generated setup notes are historical records, not authoritative instructions. Verified setup guides are written separately under `docs\setup`.
 
@@ -75,19 +77,9 @@ D:\EventPoseFinal
 |-- .git\
 |-- .gitignore
 |-- README.md
-|-- src\
-|   `-- eventpose\
-|       |-- data\
-|       |-- preprocessing\
-|       |-- models\
-|       `-- evaluation\
 |-- scripts\
 |   |-- data\
-|   |-- diagnostics\
-|   |-- train\
-|   |-- evaluate\
-|   |-- windows\
-|   `-- wsl\
+|   `-- diagnostics\
 |-- configs\
 |   |-- paths.example.toml
 |   `-- paths.local.toml       # ignored
@@ -95,15 +87,10 @@ D:\EventPoseFinal
 |-- docs\
 |   |-- setup\
 |   |-- research\
-|   |-- archive\ai_notes\
+|   |-- notes\
 |   |-- inventory\
 |   `-- superpowers\specs\
-|-- archive\
-|   `-- legacy_code\source_key\
-|-- experiments\
-|   |-- logs\
-|   |-- checkpoints\
-|   `-- results\
+|-- experiments\              # generated content ignored
 |-- data\                     # local links/content ignored
 |-- third_party\              # local links/content ignored
 `-- environment\
@@ -111,7 +98,7 @@ D:\EventPoseFinal
     `-- wsl\
 ```
 
-Empty runtime directories are represented with small README or `.gitkeep` files only where useful. Large outputs, local paths, caches, weights, datasets, and links are excluded from Git.
+This deliberately avoids recreating the old folder hierarchy. Small, useful project-owned files are extracted and categorized; unnecessary empty folders, one-folder-per-source archives, and speculative model/train/evaluate directories are not created. New functional directories are added only when code for them exists. Empty runtime directories are represented with small README or `.gitkeep` files only where useful. Large outputs, local paths, caches, weights, datasets, and links are excluded from Git.
 
 ## 5. Windows and WSL Boundary
 
@@ -164,11 +151,11 @@ Therefore the first pass adds a deterministic Windows launcher and a diagnostic 
 2. Copy `D:\Code\EventCamera` to a new, absent `D:\EventPoseFinal` path, including hidden `.git` data.
 3. Verify branch, HEAD, remote, Git status, and the hashes of tracked working-tree files against the source repository.
 4. Create the approved directory skeleton without overwriting existing repository files.
-5. Copy legacy project-owned code into source-specific archive folders and verify SHA-256 hashes.
-6. Copy research documents and notes, retaining original filenames and recording SHA-256 hashes.
+5. Extract project-owned code directly into the appropriate functional folders and verify SHA-256 hashes before any later refactoring.
+6. Copy research documents and notes into flat category folders, retaining original filenames where unique and recording SHA-256 hashes.
 7. Add ignored local path configuration and convenience links for datasets and third-party trees.
 8. Export environment inventories and add verified Windows/WSL setup guides and diagnostics.
-9. Promote only understood code into canonical `src` or `scripts` locations. Preserve the original archived copies.
+9. Keep untrusted or demonstrative scripts clearly marked in the inventory; do not create additional archive folders merely to mirror their old locations.
 10. Run acceptance checks and present the result before any cleanup, GitHub push, or deletion decision.
 
 If `D:\EventPoseFinal` already exists at implementation time, migration stops for inspection rather than merging or overwriting it.
@@ -179,7 +166,7 @@ If `D:\EventPoseFinal` already exists at implementation time, migration stops fo
 - Do not stage unrelated user changes when committing migration documentation or scaffolding.
 - Do not push to GitHub during organization.
 - Ignore datasets, third-party links, environments, installers, build output, model weights, logs, caches, and local path configuration.
-- Keep source provenance in the inventory so archived files can be traced back to their old locations.
+- Keep source provenance in the inventory so every extracted file can be traced back to its old location without preserving the old folder hierarchy.
 
 ## 9. Verification and Acceptance Criteria
 
@@ -187,7 +174,7 @@ The organization pass is accepted only when all of the following are freshly ver
 
 - `D:\EventPoseFinal` is a valid Git worktree with remote `https://github.com/YanYu-Mestia/EventCamera.git` and HEAD `49f505c` before new organization commits.
 - The pre-existing staged changes are still present and content-identical.
-- Every copied legacy code and document file matches its source SHA-256 hash.
+- Every extracted code and copied document file matches its source SHA-256 hash before any later refactoring.
 - No source directory or source file was deleted or modified.
 - DHP19 and third-party targets resolve from their recorded Windows and WSL paths.
 - Windows diagnostics report OpenEB 5.2.0, load the production HAL plugin, and successfully inspect a valid generated EVT2 RAW fixture.
