@@ -4,41 +4,7 @@
 
 本文重点说明 `environment`、`scripts` 和 `tests/fixtures` 中的**项目自写辅助文件**如何使用，以及它们和 OpenEB 官方工具的区别。
 
-DHP19 第一组真实数据的 20 帧对齐验证已完成，复现和检查方法见 [`docs/setup/dhp19-first-sample.md`](docs/setup/dhp19-first-sample.md)。
-
-## 1. 先理解“非官方文件”
-
-本项目中的“非官方文件”不是 OpenEB 或 Metavision SDK 发布的正式工具，而是以前为了探索项目而写的脚本、包装器、演示程序和测试文件。它们可以帮助定位环境、观察数据、验证思路，但不能直接等同于：
-
-- OpenEB 官方命令行工具；
-- Prophesee 官方相机驱动；
-- DHP19 官方标注解析器；
-- 已发表论文中的正式算法实现；
-- 可用于论文结论的 benchmark；
-- 已经完成训练的数据集和模型。
-
-使用原则：**先运行诊断，再运行原型；先确认输入和输出，再把结果用于研究。**
-
-## 2. 当前目录和环境边界
-
-```text
-D:\EventPoseFinal                 项目入口和自写代码
-D:\OpenEB_Dev\openeb              Windows OpenEB 5.2.0 和官方工具
-D:\OpenEB_Dev\openeb\py3venv     Windows OpenEB Python 3.11.6
-D:\DHP19                          原始 DHP19 数据
-D:\DHP19_preprocessed             预处理 NPY 数据
-WSL: /home/mestia/miniconda3      WSL Python/PyTorch 环境
-```
-
-职责分工：
-
-- **Windows**：OpenEB、未来相机连接、RAW/DAT/HDF5 检查和事件数据导出。
-- **WSL**：DHP19 解析、体素数据处理、PyTorch、训练、评估和可视化。
-- 不要在同一个 Windows Python 进程中混用 OpenEB Stream 和 `h5py`。当前 OpenEB 使用 HDF5 1.14.2，而现有 `h5py` 使用 HDF5 2.0.0，可能发生 DLL 冲突。
-
-外部路径模板位于 `configs/paths.example.toml`。当前机器的本地副本是被 Git 忽略的 `configs/paths.local.toml`，用于记录实际路径，不应提交到公共仓库。
-
-## 3. 推荐的第一次运行顺序
+## 1. 推荐的第一次运行顺序
 
 ### 第一步：检查 Windows OpenEB
 
@@ -82,9 +48,9 @@ bash /mnt/d/EventPoseFinal/environment/wsl/check_environment.sh
 
 先确认输入文件存在、输出位置正确，并阅读下方每个脚本的限制。原型脚本不建议直接用于大规模数据处理。
 
-## 4. `environment/windows` 文件详解
+## 2. `environment/windows` 文件详解
 
-### 4.1 `Set-OpenEBEnvironment.ps1`
+### 2.1 `Set-OpenEBEnvironment.ps1`
 
 路径：`environment/windows/Set-OpenEBEnvironment.ps1`
 
@@ -107,7 +73,7 @@ bash /mnt/d/EventPoseFinal/environment/wsl/check_environment.sh
 
 注意开头的点号和空格：这是把脚本加载到当前 PowerShell，而不是开启一个无关的子进程。
 
-### 4.2 `Open-EventPoseShell.ps1`
+### 2.2 `Open-EventPoseShell.ps1`
 
 路径：`environment/windows/Open-EventPoseShell.ps1`
 
@@ -127,7 +93,7 @@ bash /mnt/d/EventPoseFinal/environment/wsl/check_environment.sh
 powershell.exe -ExecutionPolicy Bypass -File D:\EventPoseFinal\environment\windows\Open-EventPoseShell.ps1
 ```
 
-### 4.3 `Test-OpenEB.ps1`
+### 2.3 `Test-OpenEB.ps1`
 
 路径：`environment/windows/Test-OpenEB.ps1`
 
@@ -143,7 +109,7 @@ powershell.exe -ExecutionPolicy Bypass -File D:\EventPoseFinal\environment\windo
 
 无相机时出现 `Camera: not connected` 是正常结果，不代表 SDK 失败。连接真实相机后重新运行即可检查设备枚举。
 
-## 5. `environment/wsl` 文件详解
+## 3. `environment/wsl` 文件详解
 
 ### `check_environment.sh`
 
@@ -178,9 +144,9 @@ cuda_available=True          PyTorch 能看到 CUDA
 
 它不会安装 `mmpose`、`mmengine` 或 `opencv`。这些包应在确定 Python、CUDA 和 MMPose 版本组合后，再创建独立的训练环境。
 
-## 6. `scripts/data` 文件详解
+## 4. `scripts/data` 文件详解
 
-### 6.1 `dhp19_dataset.py`
+### 4.1 `dhp19_dataset.py`
 
 路径：`scripts/data/dhp19_dataset.py`
 
@@ -208,7 +174,7 @@ cuda_available=True          PyTorch 能看到 CUDA
   D:\EventPoseFinal\scripts\data\dhp19_dataset.py
 ```
 
-### 6.2 `event_to_voxel.py`
+### 4.2 `event_to_voxel.py`
 
 路径：`scripts/data/event_to_voxel.py`
 
@@ -223,7 +189,7 @@ cuda_available=True          PyTorch 能看到 CUDA
 
 它会在内存中随机生成 50,000 个事件，输出体素形状和非零点数量。这是功能演示，不是 DHP19 实际数据处理，也不会读取数据集。
 
-### 6.3 `view_npy.py`
+### 4.3 `view_npy.py`
 
 路径：`scripts/data/view_npy.py`
 
@@ -245,9 +211,9 @@ python /mnt/d/EventPoseFinal/scripts/data/view_npy.py
 
 注意：这个脚本会在数据集目录中创建输出目录，因此不要在原始数据上批量运行。正式使用前应把输入和输出改成命令行参数，并把图片写入项目外的实验输出目录。
 
-## 7. `scripts/diagnostics` 文件详解
+## 5. `scripts/diagnostics` 文件详解
 
-### 7.1 `test_camera.py`
+### 5.1 `test_camera.py`
 
 路径：`scripts/diagnostics/test_camera.py`
 
@@ -271,7 +237,7 @@ python /mnt/d/EventPoseFinal/scripts/data/view_npy.py
 
 连接相机后，这个脚本只证明设备流可以开始读取，不会完成录制、保存、滤波或姿态估计。
 
-### 7.2 `generate_invalid_raw.py`
+### 5.2 `generate_invalid_raw.py`
 
 路径：`scripts/diagnostics/generate_invalid_raw.py`
 
@@ -285,7 +251,7 @@ python /mnt/d/EventPoseFinal/scripts/data/view_npy.py
 
 该诊断脚本使用 OpenEB 自带的 EVT2 encoder 生成官方工具可以读取的 RAW。
 
-### 7.3 `filter_benchmark_demo.py`
+### 5.3 `filter_benchmark_demo.py`
 
 路径：`scripts/diagnostics/filter_benchmark_demo.py`
 
@@ -299,7 +265,7 @@ python /mnt/d/EventPoseFinal/scripts/data/view_npy.py
 
 它只适合帮助回忆以前的实验设想。正式 benchmark 必须重新读取真实输入，记录实际运行时间，并保存原始数据、参数和版本信息。
 
-## 8. `tests/fixtures` 文件详解
+## 6. `tests/fixtures` 文件详解
 
 ### `test_dummy.invalid.raw`
 
@@ -318,7 +284,7 @@ python /mnt/d/EventPoseFinal/scripts/data/view_npy.py
 - 验证相机数据格式；
 - 计算事件数量、吞吐量或噪声比例。
 
-## 9. 一套安全的实际操作流程
+## 7. 一套安全的实际操作流程
 
 ### A. 只检查环境
 
@@ -366,7 +332,7 @@ bash /mnt/d/EventPoseFinal/environment/wsl/check_environment.sh
 3. 再使用 OpenEB 官方录制/转换工具保存数据；
 4. 不要先运行旧的 `generate_invalid_raw.py` 代替真实数据。
 
-## 10. 常见问题
+## 8. 常见问题
 
 ### PowerShell 提示脚本不能运行
 
@@ -414,7 +380,7 @@ find /mnt/d/DHP19_preprocessed -name 'frame_00001.npy' | head
 
 这是当前代码明确存在的占位行为，不是模型预测结果。真实训练前必须补充 DHP19 姿态标签读取、坐标系转换、样本对齐和训练/验证划分。
 
-## 11. 官方工具和自写文件的区别
+## 9. 官方工具和自写文件的区别
 
 | 内容 | 官方/自写 | 用途 | 当前可信度 |
 |---|---|---|---|
@@ -432,7 +398,7 @@ find /mnt/d/DHP19_preprocessed -name 'frame_00001.npy' | head
 | `test_dummy.invalid.raw` | 历史 fixture | 保留和追溯 | 明确无效 |
 
 
-## 12. 文件来源和保存策略
+## 10. 文件来源和保存策略
 
 - 原始来源和目标路径记录在 `docs/inventory/assets.tsv`；
 - 历史 DOCX 只作为参考，已验证的说明放在 `docs/setup`；
