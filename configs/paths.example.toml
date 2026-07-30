@@ -1,0 +1,16 @@
+[windows]
+project_root = "D:/EventPoseFinal"
+dhp19_raw = "D:/DHP19"
+dhp19_preprocessed = "D:/DHP19_preprocessed"
+openeb_root = "D:/OpenEB_Dev/openeb"
+openeb_vcpkg = "D:/OpenEB_Dev/vcpkg-2024.11.16"
+openeb_python = "D:/OpenEB_Dev/openeb/py3venv/Scripts/python.exe"
+mmpose = "D:/MMPose/mmpose"
+v2e_experiments = "D:/Event_Project/v2e_exps_public"
+rpg_vid2e = "D:/RPG_vid2e/rpg_vid2e"
+
+[wsl]
+project_root = "/mnt/d/EventPoseFinal"
+dhp19_raw = "/mnt/d/DHP19"
+dhp19_preprocessed = "/mnt/d/DHP19_preprocessed"
+python = "/home/mestia/miniconda3/bin/python"

@@ -1,0 +1,12 @@
+name: eventpose-dhp19
+channels:
+  - defaults
+dependencies:
+  - python=3.12
+  - numpy=2.1
+  - scipy=1.15
+  - h5py=3.13
+  - matplotlib=3.10
+  - numba=0.61
+  - pillow=11.1
+  - pytest=8.3

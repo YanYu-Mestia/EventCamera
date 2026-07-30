@@ -41,3 +41,35 @@ env/
 
 .env
 .env.secret
+
+# Machine-local project paths
+configs/paths.local.toml
+
+# Datasets and generated experiments
+data/*
+!data/README.md
+experiments/
+
+# Independent third-party repositories and SDK trees
+third_party/*
+!third_party/README.md
+
+# Model and training artifacts
+*.pth
+*.pt
+*.ckpt
+*.onnx
+checkpoints/
+runs/
+wandb/
+
+# Local array and event data
+*.npy
+*.npz
+*.aedat
+*.aedat4
+*.dat
+*.h5
+*.hdf5
+*.raw
+!tests/fixtures/test_dummy.invalid.raw
