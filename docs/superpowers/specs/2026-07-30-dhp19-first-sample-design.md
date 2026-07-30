@@ -29,7 +29,7 @@
 
 ### 运行环境
 
-在 WSL Ubuntu 的 `/home/mestia/miniconda3` 下创建独立 Conda 环境 `eventpose-dhp19`，使用 Python 3.12。环境只包含本阶段需要的 NumPy、SciPy、h5py、Matplotlib 和 pytest；PyTorch、MMPose 与 GPU 训练依赖留到数据闭环验证之后。
+在 WSL Ubuntu 的 `/home/mestia/miniconda3` 下创建独立 Conda 环境 `eventpose-dhp19`，使用 Python 3.12。环境只包含本阶段需要的 NumPy、SciPy、h5py、Matplotlib、Numba 和 pytest；Numba 用于编译官方逐事件背景活动过滤循环，避免数百万事件在纯 Python 中逐个处理。PyTorch、MMPose 与 GPU 训练依赖留到数据闭环验证之后。
 
 项目保存一份可重复创建该环境的环境定义文件。现有 WSL base、Windows `event_pose` 及其他 Conda 环境保持不变。
 
