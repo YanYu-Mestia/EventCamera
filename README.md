@@ -431,34 +431,8 @@ find /mnt/d/DHP19_preprocessed -name 'frame_00001.npy' | head
 | `filter_benchmark_demo.py` | 历史演示 | 打印预设数字 | 不是实际 benchmark |
 | `test_dummy.invalid.raw` | 历史 fixture | 保留和追溯 | 明确无效 |
 
-## 12. 项目当前阶段和下一步
 
-目前已经完成：
-
-- Windows OpenEB 5.2.0 安装验证；
-- 项目代码和文档归档；
-- DHP19 原始数据和预处理数据定位；
-- Windows/WSL 环境检查入口；
-- 原型代码的来源和 SHA-256 清单。
-
-尚未完成：
-
-- DHP19 真实姿态标签对齐；
-- 可复现的数据集类和训练/验证划分；
-- 正式事件体素化流水线；
-- MMPose/MMEngine 独立训练环境；
-- 模型训练、评估和真实 benchmark；
-- 物理事件相机采集测试。
-
-建议下一步顺序：
-
-1. 先确认 DHP19 标签文件和事件文件的对应关系；
-2. 在 WSL 创建独立、可复现的训练环境；
-3. 把 `view_npy.py` 和 `dhp19_dataset.py` 的硬编码路径改成命令行参数；
-4. 用小样本验证事件、体素和标签坐标；
-5. 最后再接入 MMPose 或其他姿态模型。
-
-## 13. 文件来源和保存策略
+## 12. 文件来源和保存策略
 
 - 原始来源和目标路径记录在 `docs/inventory/assets.tsv`；
 - 历史 DOCX 只作为参考，已验证的说明放在 `docs/setup`；
